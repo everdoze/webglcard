@@ -1,0 +1,43 @@
+{
+  "name": "webgl-portfolio",
+  "version": "0.1.0",
+  "description": "Website",
+  "autor": "Andrey Aulov (andrey.aulov@outlook.com)",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "start": "http-server --port ${PORT:-8080} build",
+    "prestart": "npm run build",
+    "build": "webpack"
+  },
+  "dependencies": {
+    "@babel/cli": "~7.24.6",
+    "@babel/core": "~7.24.6",
+    "@barba/core": "~2.9.7",
+    "babel-loader": "~9.1.3",
+    "@babel/preset-react": "~7.26.3",
+    "babel-plugin-lodash": "~3.3.4",
+    "babel-preset-es2017": "~7.0.0-beta.3",
+    "clean-webpack-plugin": "~4.0.0",
+    "css-loader": "~6.11.0",
+    "gl-matrix": "~3.4.3",
+    "gsap": "~3.12.5",
+    "html-webpack-plugin": "~5.6.0",
+    "raw-loader": "~4.0.2",
+    "file-loader": "~6.2.0",
+    "sass": "~1.77.4",
+    "sass-loader": "~13.3.3",
+    "source-map-loader": "~5.0.0",
+    "stats.js": "~0.17.0",
+    "style-loader": "~4.0.0",
+    "three": "~0.165.0",
+    "webpack": "~5.91.0",
+    "webpack-cli": "~5.1.4",
+    "webpack-dev-server": "~5.0.4",
+    "react": "~18.3.0",
+    "react-dom": "~18.3.0",
+    "normalize.css": "~8.0.1"
+  },
+  "devDependencies": {
+    "@babel/plugin-transform-react-jsx": "~7.24.6"
+  }
+}

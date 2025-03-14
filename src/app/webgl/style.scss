@@ -1,0 +1,11 @@
+.canvas {
+  height: 100vh;
+  width: 100vw;
+}
+.panelInfo {
+  position: fixed;
+  backdrop-filter: blur(16px);
+  background: rgba(171, 255, 207, 0.25);
+  border-radius: 12px;
+  padding: 12px;
+}

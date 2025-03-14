@@ -1,0 +1,39 @@
+.socialPanel {
+  position: fixed;
+  bottom: 4%;
+  right: 0;
+  backdrop-filter: blur(20px);
+  border-radius: 32px 0 0 32px;
+  background: var(--panel-background);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 6px 0;
+    g {
+      transition: fill .5s var(--transition);
+    }
+    &:first-child {
+      padding-top: 0;
+    }
+    &:last-child {
+      padding-bottom: 0;
+    }
+    &:hover {
+      g {
+        fill: var(--active-text-color) !important;
+      }
+    }
+  }
+
+  animation: fadeIn 0.5s var(--transition);
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
