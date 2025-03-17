@@ -1,0 +1,31 @@
+.projectPanel {
+  position: absolute;
+  background: var(--panel-background);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 12px;
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+  transform: scale(0);
+  animation: moveIn .5s var(--transition) forwards;
+  @keyframes moveIn {
+    from { transform: scale(0) }
+    to { transform: scale(1) }
+  }
+  @keyframes moveOut {
+    from { transform: scale(1) }
+    to { transform: scale(0) }
+  }
+  &.hide {
+    animation: moveOut .5s var(--transition) forwards;
+  }
+  @for $i from 1 through 10 {
+    &:nth-child(#{$i}):not(.hide) {
+      animation-delay: #{($i - 1) * 0.2}s;
+    }
+  }
+}

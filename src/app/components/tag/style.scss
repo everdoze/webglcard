@@ -1,0 +1,10 @@
+.tag {
+  border-radius: 20px;
+  color: var(--active-text-color);
+  font-size: 12px;
+  padding: 4px 8px;
+  margin-right: 6px;
+  user-select: none;
+  transition: background .4s var(--transition);
+  backdrop-filter: blur(20px);
+}

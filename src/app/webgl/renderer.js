@@ -31,6 +31,7 @@ import { Font } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
 import AboutMe from 'app/views/about-me';
+import Projects from 'app/views/projects';
 
 import {Elastic, gsap, Power0, Power2} from 'gsap';
 import DotsVertexShader from 'shaders/dots.vertex.glsl';
@@ -59,7 +60,9 @@ const SETUP = {
   INFO_HOVER_DURATION: 0.5,
   INFO_OUT_DURATION: 0.5,
   DOT_HOVER_DURATION: 0.5,
-  DOT_OUT_DURATION: 0.5
+  DOT_OUT_DURATION: 0.5,
+  BACKGROUND:  new Color('#326262'),
+  DARKEN_BACKGROUND: new Color('#081f1f')
 };
 
 class Renderer {
@@ -100,7 +103,7 @@ class Renderer {
       },
       {
         name: '/projects',
-        component: AboutMe,
+        component: Projects,
         texture: this.loadTexture(Handshake)
       }
     ];
@@ -117,6 +120,7 @@ class Renderer {
 
     this.animations = {};
     this.infoAnimations = {};
+    this.bgColorTransition = null;
     this.hovered = [];
     this.prevHovered = [];
     this.infoHovered = [];
@@ -184,7 +188,7 @@ class Renderer {
 
     this.renderer.setSize(this.canvas.width, this.canvas.height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor('#081f1f'); //
+    this.renderer.setClearColor(SETUP.BACKGROUND); //'#081f1f'
 
     this.composer = new EffectComposer(this.renderer);
 
@@ -216,6 +220,7 @@ class Renderer {
   initGroup () {
     this.group = new Group();
     this.scene.add(this.group);
+    this.scene.background = new Color(SETUP.BACKGROUND);
   }
 
   base64ToUint8Array(base64) {
@@ -708,13 +713,40 @@ class Renderer {
     const endPosition = pos.clone().add(direction.multiplyScalar(-distance));
     
     EventSystem.trigger('close-page');
+    this.transitionColor(new Color('#081f1f'));
     this.navigateCamera(endPosition, this.camera).then(() => {
       EventSystem.trigger('show-page', this.infoPoints[idx]);
     }).catch(() => {logger.log('Seems like you\'re like to press buttons. Rerouting...')});
     this.detail = true;
   }
-
+  
+  transitionColor (color) {
+    let duration = SETUP.CAMERA_NAVIGATION_TIME;
+    if (this.bgColorTransition) {
+      const total = this.bgColorTransition.duration();
+      const elapsed = this.bgColorTransition.time();
+      duration = total - elapsed;
+      this.bgColorTransition.kill();
+      this.bgColorTransition = null;
+    }
+    
+    return new Promise((resolve) => {
+      this.bgColorTransition = gsap.to(this.scene.background, {
+        r: color.r,
+        g: color.g,
+        b: color.b,
+        duration: duration,
+        ease: "power2.inOut",
+        onComplete: () => {
+          this.bgColorTransition = null;
+          resolve();
+        }
+      })
+    });
+  }
+  
   onBack () {
+    this.transitionColor(SETUP.BACKGROUND);
     this.navigateCamera(SETUP.DEFAULT_CAMERA_POSITION, this.camera).then(() => {
       this.detail = false;
     }).catch(() => {logger.log('Seems like you\'re like to press buttons. Rerouting...')});

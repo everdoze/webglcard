@@ -2,11 +2,10 @@ const path = require('path');
 const getValue = require('./get-env-value');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const babelPreset = require('babel-preset-es2017');
 const appModulesRoot = path.resolve(__dirname, 'src');
 const nodeModulesRoot = path.resolve(__dirname, 'node_modules');
 
-const title = getValue('TITLE', 'Andrew Aulov (Frontend Development)');
+const title = getValue('TITLE', 'Andrew Aulov (Software Developer)');
 const additionalBodyHeaderHtml = getValue('ADDITIONAL_BODY_HEADER', '');
 const entryName = getValue('ENTRY_NAME', 'index.html');
 const needMinify = getValue('MINIFY', false);
