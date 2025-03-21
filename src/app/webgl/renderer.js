@@ -1,4 +1,3 @@
-import style from './style.scss';
 import {
   BufferGeometry,
   Color,
@@ -30,9 +29,6 @@ import {UnrealBloomPass} from 'three/examples/jsm/postprocessing/UnrealBloomPass
 import { Font } from 'three/examples/jsm/loaders/FontLoader';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
 
-import AboutMe from 'app/views/about-me';
-import Projects from 'app/views/projects';
-
 import {Elastic, gsap, Power0, Power2} from 'gsap';
 import DotsVertexShader from 'shaders/dots.vertex.glsl';
 import DotsFragmentShader from 'shaders/dots.fragment.glsl';
@@ -45,8 +41,8 @@ import SmileBeam from 'textures/smile-beam1.png';
 import CirclePhone from 'textures/circle-phone-flip1.png';
 import Handshake from 'textures/handshake1.png';
 import OswaldFont from 'typo/Oswald_Regular.json';
-import debounce from 'utils/debounce';
-import {cancelablePromise} from 'utils/cancellable-promise';
+import debounce from '@/lib/debounce';
+import {cancelablePromise} from '@/lib/cancellable-promise';
 import Logger from 'app/logger';
 
 const logger = new Logger('Renderer');
@@ -62,16 +58,25 @@ const SETUP = {
   DOT_HOVER_DURATION: 0.5,
   DOT_OUT_DURATION: 0.5,
   BACKGROUND:  new Color('#326262'),
-  DARKEN_BACKGROUND: new Color('#081f1f')
+  DARKEN_BACKGROUND: new Color('#081f1f'),
+  BLOOM_DETAIL: {strength: 0.6, threshold: 0.4, radius: 1.2},
+  BLOOM_REGULAR: {strength: 0.3, threshold: 0.50, radius: 1.2}
+};
+
+const CURSOR = {
+  DEFAULT: 'grab',
+  ROTATING: 'grabbing',
+  HOVER: 'pointer'
 };
 
 class Renderer {
-  constructor(root, onReady) {
+  constructor(root, onReady, infoPoints = []) {
     this.canvas = this.createCanvas(root);
     this.lastTime = performance.now();
     this.deltaTime = 0;
     this.cancelNavigationThen = null;
     this.detail = false;
+    this.cursor = 'grab';
     
     this.devicePixelRatio = Math.min(window.devicePixelRatio, 2);
     this.dotsize = 5 * this.devicePixelRatio;
@@ -79,34 +84,16 @@ class Renderer {
 
     this.infodotsize = 25 * this.devicePixelRatio;
     this.infodothoverdelta = 7 * this.devicePixelRatio;
-
-    this.infoPoints = [
-      {
-        name: '/about',
-        component: AboutMe,
-        texture: this.loadTexture(InfoTexture)
-      },
-      {
-        name: '/skills',
-        component: AboutMe,
-        texture: this.loadTexture(BrainTexture)
-      },
-      {
-        name: '/hobbies',
-        component: AboutMe,
-        texture: this.loadTexture(SmileBeam)
-      },
-      {
-        name: '/contacts',
-        component: AboutMe,
-        texture: this.loadTexture(CirclePhone)
-      },
-      {
-        name: '/projects',
-        component: Projects,
-        texture: this.loadTexture(Handshake)
-      }
-    ];
+    
+    this.textures = {
+      '/about': this.loadTexture(InfoTexture),
+      '/skills': this.loadTexture(BrainTexture),
+      '/hobbies': this.loadTexture(SmileBeam),
+      '/contacts': this.loadTexture(CirclePhone),
+      '/projects': this.loadTexture(Handshake)
+    };
+    
+    this.infoPoints = infoPoints;
 
     this.initColors();
     this.initScene();
@@ -121,6 +108,7 @@ class Renderer {
     this.animations = {};
     this.infoAnimations = {};
     this.bgColorTransition = null;
+    this.bloomTransition = null;
     this.hovered = [];
     this.prevHovered = [];
     this.infoHovered = [];
@@ -194,9 +182,14 @@ class Renderer {
 
     this.composer.addPass(new RenderPass(this.scene, this.camera));
 
-    const bloomPass = new UnrealBloomPass(new Vector2(this.canvas.width, this.canvas.height), 0.3, 1.2, 0.50);
+    this.bloomPass = new UnrealBloomPass(
+      new Vector2(this.canvas.width, this.canvas.height),
+      SETUP.BLOOM_REGULAR.strength,
+      SETUP.BLOOM_REGULAR.radius,
+      SETUP.BLOOM_REGULAR.threshold
+    );
 
-    this.composer.addPass(bloomPass);
+    this.composer.addPass(this.bloomPass);
   }
 
   initScene () {
@@ -353,7 +346,7 @@ class Renderer {
     const infoColors = new Float32Array(this.infoPoints.length * 3);
     const infoTextureIndices = new Float32Array(this.infoPoints.length);
   
-    const infoTextures = this.infoPoints.map(p => p.texture);
+    const infoTextures = this.infoPoints.map(p => this.textures[p.name] || Object.values(this.textures)[0]);
     // Заполнение массивов данными для точек с иконкой "info"
     const MAX_VERTICAL_ANGLE = (20 * Math.PI) / 180;
     const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5));
@@ -529,24 +522,15 @@ class Renderer {
         }
       }
     }
-
-
-    if (this.infoHovered.length) {
-      this.canvas.style.cursor = 'pointer';
-    } else {
-      this.canvas.style.cursor = 'default';
-    }
+    
+    this.canvas.style.cursor = this.cursor;
 
     this.prevInfoHovered = this.infoHovered.slice(0);
     this.prevHovered = this.hovered.slice(0);
     this.attributeSizes.needsUpdate = true;
     this.attributePositions.needsUpdate = true;
 
-    //this.renderer.render(this.scene, this.camera);
-
     this.composer.render();
-
-    // this.stats.end();
   }
 
   onInfoHover (index) {
@@ -554,6 +538,8 @@ class Renderer {
       this.infoAnimations[index].kill();
       delete this.infoAnimations[index];
     }
+    
+    this.cursor = CURSOR.HOVER;
 
     this.infoAnimations[index] = gsap.to(this.infoDotsGeometry.attributes.size.array, {
       [index]: this.infodotsize + this.infodothoverdelta,
@@ -570,6 +556,8 @@ class Renderer {
       this.infoAnimations[index].kill();
       delete this.infoAnimations[index];
     }
+    
+    this.cursor = CURSOR.DEFAULT;
 
     this.infoAnimations[index] = gsap.to(this.infoDotsGeometry.attributes.size.array, {
       [index]: this.infodotsize,
@@ -667,11 +655,12 @@ class Renderer {
   }
 
   createMouseHandlers() {
-    this.canvas.addEventListener('mousedown', () => {
+    window.addEventListener('mousedown', () => {
       if (this.detail) {
         return;
       }
       this.isDragging = true;
+      this.cursor = CURSOR.ROTATING;
     });
 
     window.addEventListener('mousemove', (e) => {
@@ -690,6 +679,7 @@ class Renderer {
         return;
       }
       this.isDragging = false;
+      this.cursor = CURSOR.DEFAULT;
     });
 
     window.addEventListener('click', () => {
@@ -713,40 +703,56 @@ class Renderer {
     const endPosition = pos.clone().add(direction.multiplyScalar(-distance));
     
     EventSystem.trigger('close-page');
-    this.transitionColor(new Color('#081f1f'));
+    this.transitionColor(SETUP.DARKEN_BACKGROUND, SETUP.BLOOM_DETAIL);
     this.navigateCamera(endPosition, this.camera).then(() => {
-      EventSystem.trigger('show-page', this.infoPoints[idx]);
+      EventSystem.trigger('show-page', this.infoPoints[idx].name);
     }).catch(() => {logger.log('Seems like you\'re like to press buttons. Rerouting...')});
     this.detail = true;
   }
   
-  transitionColor (color) {
-    let duration = SETUP.CAMERA_NAVIGATION_TIME;
+  transitionColor (color, bloom) {
     if (this.bgColorTransition) {
-      const total = this.bgColorTransition.duration();
-      const elapsed = this.bgColorTransition.time();
-      duration = total - elapsed;
       this.bgColorTransition.kill();
       this.bgColorTransition = null;
     }
+    if (this.bloomTransition) {
+      this.bloomTransition.kill();
+      this.bloomTransition = null;
+    }
     
-    return new Promise((resolve) => {
-      this.bgColorTransition = gsap.to(this.scene.background, {
-        r: color.r,
-        g: color.g,
-        b: color.b,
-        duration: duration,
-        ease: "power2.inOut",
-        onComplete: () => {
-          this.bgColorTransition = null;
-          resolve();
-        }
+    
+    return Promise.all([
+      new Promise((resolve) => {
+        this.bgColorTransition = gsap.to(this.scene.background, {
+          r: color.r,
+          g: color.g,
+          b: color.b,
+          duration: SETUP.CAMERA_NAVIGATION_TIME,
+          ease: "power2.inOut",
+          onComplete: () => {
+            this.bgColorTransition = null;
+            resolve();
+          }
+        })
+      }),
+      new Promise((resolve) => {
+        this.bloomTransition = gsap.to(this.bloomPass, {
+          strength: bloom.strength,
+          threshold: bloom.threshold,
+          radius: bloom.radius,
+          duration: SETUP.CAMERA_NAVIGATION_TIME,
+          ease: "power2.inOut",
+          onComplete: () => {
+            this.bloomTransition = null;
+            resolve();
+          }
+        })
       })
-    });
+    ])
   }
   
   onBack () {
-    this.transitionColor(SETUP.BACKGROUND);
+    this.transitionColor(SETUP.BACKGROUND, SETUP.BLOOM_REGULAR);
     this.navigateCamera(SETUP.DEFAULT_CAMERA_POSITION, this.camera).then(() => {
       this.detail = false;
     }).catch(() => {logger.log('Seems like you\'re like to press buttons. Rerouting...')});
@@ -831,11 +837,10 @@ class Renderer {
     canvas.setAttribute('id', 'webgl');
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-    canvas.classList.add(style.canvas);
+    canvas.classList.add('canvas');
     root.append(canvas);
     return canvas;
   }
-
 
 }
 

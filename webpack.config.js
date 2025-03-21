@@ -2,23 +2,11 @@ const path = require('path');
 const getValue = require('./get-env-value');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const appModulesRoot = path.resolve(__dirname, 'src');
-const nodeModulesRoot = path.resolve(__dirname, 'node_modules');
 
 const title = getValue('TITLE', 'Andrew Aulov (Software Developer)');
 const additionalBodyHeaderHtml = getValue('ADDITIONAL_BODY_HEADER', '');
 const entryName = getValue('ENTRY_NAME', 'index.html');
 const needMinify = getValue('MINIFY', false);
-
-const getCssLoader = () => ({
-    loader: 'css-loader',
-    options: {
-        modules: {
-            localIdentName: !needMinify ? '[path][name]__[local]' : '[hash:base64]',
-        },
-        sourceMap: !needMinify
-    }
-});
 
 module.exports = {
     mode: 'development',
@@ -35,8 +23,11 @@ module.exports = {
       filename: 'app.js'
     },
     resolve: {
-        modules: [appModulesRoot, nodeModulesRoot],
-        extensions: ['.js'],
+        alias: {
+            "@": path.resolve(__dirname, "src"),
+        },
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+        extensions: ['.js', '.jsx'],
     },
     optimization: {
         minimize: needMinify
@@ -46,7 +37,10 @@ module.exports = {
         rules: [
             {
                 test: /\.ttf$/,
-                type: 'asset'
+                type: 'asset',
+                generator: {
+                    filename: 'fonts/[name][ext]'
+                }
             },
             {
               test: /\.(png|jpg|jpeg|svg)$/,
@@ -59,11 +53,32 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [ 'style-loader', getCssLoader() ]
+                use: [ 'style-loader', 'css-loader', 'postcss-loader' ]
             },
             {
                 test: /\.scss$/,
-                use: ['style-loader', getCssLoader(), 'sass-loader' ]
+                use: [
+                    'style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: !needMinify,
+                            importLoaders: 1,
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: !needMinify,
+                        }
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: !needMinify,
+                        }
+                    }
+                ]
             },
             {
                 test: /\.(glsl)$/,
@@ -80,7 +95,7 @@ module.exports = {
             //     // },
             // },
             {
-                test: /\.js$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: [
                     {
@@ -90,7 +105,7 @@ module.exports = {
                                 [
                                     "@babel/preset-react",
                                     {
-                                        runtime: "automatic" // React 19 поддерживает этот режим
+                                        runtime: "automatic" // React 17+ поддерживает automatic JSX runtime
                                     }
                                 ]
                             ],

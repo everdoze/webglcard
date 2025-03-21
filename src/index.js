@@ -7,6 +7,8 @@ import 'normalize.css';
 const container = document.getElementById("root");
 
 if (container) {
-  const root = ReactDOM.createRoot(container);
-  root.render(<App/>);
+  document.fonts.ready.then(() => {
+    const root = ReactDOM.createRoot(container);
+    root.render(<App/>);
+  });
 }
