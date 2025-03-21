@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "description": "Website",
   "autor": "Andrey Aulov (andrey.aulov@outlook.com)",
+  "homepage": "https://everdoze.github.io/webglcard/",
   "scripts": {
     "dev": "webpack-dev-server",
     "start": "http-server --port ${PORT:-8080} build",
     "prestart": "npm run build",
-    "build": "webpack"
+    "build": "webpack",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@babel/cli": "~7.24.6",
@@ -44,6 +46,7 @@
     "@babel/plugin-transform-react-jsx": "~7.24.6",
     "@tailwindcss/postcss": "~4.0.14",
     "autoprefixer": "~10.4.21",
+    "gh-pages": "^6.3.0",
     "postcss-loader": "~8.1.1",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
