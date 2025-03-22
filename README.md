@@ -5,7 +5,7 @@ Welcome to my personal portfolio showcasing my projects, skills, and experience 
 ---
 
 ## 🚀 Live Demo
-👉 [View Portfolio](https://everdoze.github.io/webglcard/)
+👉 [View Portfolio](https://andrew-aulov.pages.dev/)
 
 ---
 
