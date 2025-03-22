@@ -18,7 +18,7 @@ const SocialNetworksPanel = () => {
       </a>
       <a
         className="hover:scale-110 transition-transform"
-        href="https://www.linkedin.com/in/andrey-aulov-71224121a/"
+        href="https://www.linkedin.com/in/andrey-aulov-71224121a"
         target="_blank"
         rel="noopener noreferrer"
       >

@@ -27,9 +27,9 @@ const contacts = [
   },
   {
     label: "LinkedIn",
-    value: "linkedin.com/in/aulov",
+    value: "linkedin.com/in/andrey-aulov",
     icon: Linkedin,
-    href: "https://linkedin.com/in/aulov",
+    href: "https://linkedin.com/in/andrey-aulov-71224121a",
   },
 ];
 
