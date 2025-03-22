@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import Renderer from './Renderer';
+import Renderer from './renderer';
 
 const RendererComponent = ({onReady, pages = []}) => {
   const mountRef = useRef(null);

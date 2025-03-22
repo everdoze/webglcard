@@ -2,7 +2,9 @@ const path = require('path');
 const getValue = require('./get-env-value');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const CompressionPlugin = require('compression-webpack-plugin');
+
 const isProduction = process.env.NODE_ENV === 'production';
 const title = getValue('TITLE', 'Andrew Aulov (Software Developer)');
 const additionalBodyHeaderHtml = getValue('ADDITIONAL_BODY_HEADER', '');
@@ -148,6 +150,14 @@ module.exports = {
             },
         }),
         new CleanWebpackPlugin(),
-        new BundleAnalyzerPlugin()
+        // new BundleAnalyzerPlugin(),
+        new CompressionPlugin({
+            filename: '[path][base].br',
+            algorithm: 'brotliCompress',
+            test: /\.(js|css|html|svg|json|wasm)$/,
+            compressionOptions: { level: 11 },
+            threshold: 10240,
+            minRatio: 0.8,
+        })
     ]
 };
