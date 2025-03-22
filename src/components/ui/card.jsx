@@ -20,7 +20,7 @@ export const Card = ({ className, ...props }) => (
  * CardHeader — верхняя часть карточки (заголовок, иконка).
  */
 export const CardHeader = ({ className, ...props }) => (
-  <div className={cn("flex flex-col space-y-1.5 p-6 mb-6 border-b border-b-teal-200/50 bg-teal-200/10 text-teal-50", className)} {...props} />
+  <div className={cn("flex flex-col rounded-tl-xl space-y-1.5 p-6 mb-6 border-b border-b-teal-200/50 bg-teal-200/10 text-teal-50", className)} {...props} />
 );
 
 /**

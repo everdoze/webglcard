@@ -8,7 +8,7 @@
     "dev": "webpack-dev-server",
     "start": "http-server --port ${PORT:-8080} build",
     "prestart": "npm run build",
-    "build": "webpack",
+    "build": "webpack --mode production",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
@@ -52,6 +52,7 @@
     "prettier-plugin-tailwindcss": "^0.6.11",
     "sass": "~1.77.4",
     "sass-loader": "~13.3.3",
-    "tailwindcss": "~3.4.17"
+    "tailwindcss": "~3.4.17",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

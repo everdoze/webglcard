@@ -2,25 +2,26 @@ const path = require('path');
 const getValue = require('./get-env-value');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const isProduction = process.env.NODE_ENV === 'production';
 const title = getValue('TITLE', 'Andrew Aulov (Software Developer)');
 const additionalBodyHeaderHtml = getValue('ADDITIONAL_BODY_HEADER', '');
 const entryName = getValue('ENTRY_NAME', 'index.html');
-const needMinify = getValue('MINIFY', false);
 
 module.exports = {
-    mode: 'development',
+    mode: isProduction ? 'production' : 'development',
     entry: [
         path.resolve(__dirname, 'src/index.js')
     ],
-    devServer: {
-        compress: false,
-        port: 9000,
-    },
+    // devServer: {
+    //     compress: false,
+    //     port: 9000,
+    // },
     output: {
       path: path.join(__dirname, 'dist'),
       publicPath: '/webglcard/',
-      filename: 'app.js'
+      filename: '[name].[contenthash].js',
+      chunkFilename: '[name].[contenthash].js',
     },
     resolve: {
         alias: {
@@ -30,14 +31,19 @@ module.exports = {
         extensions: ['.js', '.jsx'],
     },
     optimization: {
-        minimize: needMinify
+        minimize: isProduction,
+        splitChunks: {
+            chunks: 'all',
+            minSize: 20000,
+            maxSize: 244000,
+        }
     },
-    devtool: 'eval-source-map',
+    devtool: isProduction ? false : 'eval-source-map',
     module: {
         rules: [
             {
                 test: /\.ttf$/,
-                type: 'asset',
+                type: 'asset/resource',
                 generator: {
                     filename: 'fonts/[name][ext]'
                 }
@@ -62,20 +68,20 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
-                            sourceMap: !needMinify,
+                            sourceMap: !isProduction,
                             importLoaders: 1,
                         }
                     },
                     {
                         loader: 'postcss-loader',
                         options: {
-                            sourceMap: !needMinify,
+                            sourceMap: !isProduction,
                         }
                     },
                     {
                         loader: 'sass-loader',
                         options: {
-                            sourceMap: !needMinify,
+                            sourceMap: !isProduction,
                         }
                     }
                 ]
@@ -125,14 +131,14 @@ module.exports = {
             filename: entryName,
             template: 'public/index.html',
             favicon: 'public/favicon.ico',
-            minify: !needMinify ? false : {
+            minify: isProduction ? {
                 minifyCSS: true,
                 collapseWhitespace: true,
                 removeComments: true,
                 removeRedundantAttributes: true,
                 removeScriptTypeAttributes: true,
                 removeStyleLinkTypeAttributes: true
-            },
+            } : false,
             chunksSortMode: function (a, b) {
                 if (a.entry !== b.entry) {
                     return b.entry ? 1 : -1;
@@ -141,6 +147,7 @@ module.exports = {
                 }
             },
         }),
-        new CleanWebpackPlugin()
+        new CleanWebpackPlugin(),
+        new BundleAnalyzerPlugin()
     ]
 };
