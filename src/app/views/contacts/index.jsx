@@ -15,7 +15,7 @@ import EventSystem from "@/app/events";
 const contacts = [
   {
     label: "Email",
-    value: "andrey.aulov@example.com",
+    value: "andrey.aulov@outlook.com",
     icon: Mail,
     href: "mailto:andrey.aulov@outlook.com",
   },
