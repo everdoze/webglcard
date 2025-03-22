@@ -9,11 +9,11 @@ Welcome to my personal portfolio showcasing my projects, skills, and experience 
 
 ---
 
-## 🛠 Stack & Tools
-- **React** + **shadcn/ui** — UI and component design
-- **Tailwind CSS** — Utility-first styling
-- **Webpack** — Custom build process
-- **Three.js** — 3D engine
+## 🛠 Tools
+- **React**
+- **Tailwind CSS**
+- **Webpack**
+- **Three.js**
 ---
 
 ## 📂 Structure
@@ -38,7 +38,7 @@ npm run deploy    # Deploy to GitHub Pages
 ## 🔗 Contacts
 - GitHub: [github.com/everdoze](https://github.com/everdoze)
 - LinkedIn: [linkedin.com/in/aulov](https://linkedin.com/in/aulov)
-- SoundCloud: [andrey.aulov@outlook.com](mailto:andrey.aulov@outlook.com)
+- Email: [andrey.aulov@outlook.com](mailto:andrey.aulov@outlook.com)
 
 ---
 
