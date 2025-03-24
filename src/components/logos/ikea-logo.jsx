@@ -5,7 +5,7 @@ const IkeaLogo = ({width=120, height=20, style, className=''}) => {
     <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
          width={width} height={height} viewBox="0 114 348 120"
          preserveAspectRatio="xMidYMid meet" style={style} className={className}>
-      <rect y="114" width="348" height="120" fill="rgb(247, 212, 59)"/>
+      <rect x="2" y="114" width="344" height="120" fill="rgb(247, 212, 59)"/>
       <g transform="translate(0.000000,348.000000) scale(0.100000,-0.100000)" stroke="none" fill="rgb(35, 96, 165)">
         <path d="M0 1740 l0 -610 1740 0 1740 0 0 610 0 610 -1740 0 -1740 0 0 -610z
     m2044 550 c883 -54 1486 -314 1407 -606 -88 -326 -1037 -564 -2001 -504 -616

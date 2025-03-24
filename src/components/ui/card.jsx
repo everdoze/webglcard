@@ -34,7 +34,7 @@ export const CardTitle = ({ className, ...props }) => (
  * CardDescription — описание под заголовком.
  */
 export const CardDescription = ({ className, ...props }) => (
-  <p className={cn("text-md text-muted-foreground italic", className)} {...props} />
+  <p className={cn("text-md text-muted-foreground text-teal-100", className)} {...props} />
 );
 
 /**

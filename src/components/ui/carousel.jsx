@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, Children } from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import React, { useState, useRef, useEffect, Children } from 'react';
+import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export const Carousel = ({ children, className }) => {
   const slides = Children.toArray(children);
@@ -86,13 +86,13 @@ export const Carousel = ({ children, className }) => {
       </div>
       
       {/* Dots */}
-      <div className="flex justify-center mt-4 space-x-2">
+      <div className="flex justify-center items-center mt-4 space-x-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goTo(index)}
             className={cn(
-              "w-3 h-3 rounded-full transition-colors",
+              "block w-3 h-3 rounded-full transition-colors",
               current === index ? "bg-teal-500" : "bg-teal-50/30"
             )}
             aria-label={`Go to slide ${index + 1}`}

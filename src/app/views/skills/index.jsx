@@ -16,27 +16,33 @@ const skillsData = [
   {
     category: "💻 Languages & Frameworks",
     skills: ["JavaScript", "TypeScript", "Python", "C++", "Java", "Node.js", "React", "Redux"],
-    colors: ["#FFD87280", "#3178c680", "#FF72727F", "#00599c80", "#b0721980", "#68a06380", "#61dafb80", "#764abc80"]
+    colors: [
+      "#9d8545", "#3178c6", "#984545", "#00599c",
+      "#966214", "#68a063", "#3b8da1", "#643f9f"
+    ]
   },
   {
     category: "🌐 Web Development",
     skills: ["HTML & CSS", "SCSS/SASS", "Tailwind CSS", "shadcn/ui", "Webpack", "Git", "SQL"],
-    colors: ["#e34c2680", "#cd679980", "#38bdf880", "#6366f180", "#8ed6fb80", "#f0503280", "#00758f80"]
+    colors: [
+      "#8c3118", "#814160", "#1e6585", "#4a4cb7",
+      "#537e8f", "#f0503280", "#005c72"
+    ]
   },
   {
     category: "🛠️ Tools & Platforms",
-    skills: ["🐳 Docker", "🚀️ GitHub Actions", "⚡ Redis"],
-    colors: ["#0db7ed80", "#FFB69A7F", "#9FD4007F"]
+    skills: ["🐳 Docker", "🚀️ GitHub Actions", "⚡ Redis", "🔧 Make"],
+    colors: ["#08779a", "#916758", "#5e8300", "#694ca6"]
   },
   {
     category: "🤝 Soft Skills",
     skills: ["👥 Team Leadership", "🔍 Code Review", "🚦 Agile Methodology"],
-    colors: ["#45CE5D80", "#9c27b080", "#ff980080"]
+    colors: ["#22674a", "#6e1b7c", "#9a5a00"]
   },
   {
     category: "🧩 Architecture & Practices",
-    skills: ["🧹 Clean Code", "🔗 System Integration"],
-    colors: ["#607d8b80", "#3f51b580"]
+    skills: ["🧹 Clean Code", "🔗 System Integration", "🧱 12-Factor App"],
+    colors: ["#455a64", "#232e69", "#3e4935"]
   }
 ];
 
@@ -59,7 +65,7 @@ const Skills = ({ onClose }) => {
             <h3 className="text-lg font-medium text-foreground mb-2">{section.category}</h3>
             <div className="flex flex-wrap justify-start gap-2">
               {section.skills.map((skill, i) => (
-                <Tag text={skill} color={section.colors[i]} />
+                <Tag key={i} text={skill} color={section.colors[i]} />
               ))}
             </div>
           </div>

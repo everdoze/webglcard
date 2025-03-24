@@ -23,27 +23,37 @@ const panelData = [
   {
     logo: FrLogo,
     tags: ["Frontend Developer", "Team Lead", "JavaScript"],
-    colors: ["#32b2b280", "#45CE5D80", "#FFD87280"],
+    date: "March 2023 - Current",
+    project: "FastReport Online Designer",
+    colors: ["#2a8d8d", "#22674a", "#9d8545"],
   },
   {
     logo: FppLogo,
     tags: ["Frontend Developer", "JavaScript", "Python"],
-    colors: ["#32b2b280", "#FFD87280", "#FF72727F"],
-  },
-  {
-    logo: GlobusLogo,
-    tags: ["Fullstack Developer", "JavaScript", "ABAP"],
-    colors: ["#B232947F", "#FFD87280", "#FFB69A7F"],
-  },
-  {
-    logo: EfesLogo,
-    tags: ["Backend Developer", "ABAP"],
-    colors: ["#3250B27F", "#FFB69A7F"],
+    date: "January 2020 - February 2022",
+    project: "FairPlayPay Banking System",
+    colors: ["#2a8d8d", "#9d8545", "#cc4f22"],
   },
   {
     logo: IkeaLogo,
     tags: ["Fullstack Developer", "JavaScript", "ABAP"],
-    colors: ["#B232677F", "#FFD87280", "#FFB69A7F"],
+    date: "January 2018 - March 2019",
+    project: "Loyalty System / Hybris Marketing",
+    colors: ["#9d2c88", "#bb7256", "#bb7256"],
+  },
+  {
+    logo: GlobusLogo,
+    tags: ["Fullstack Developer", "JavaScript", "ABAP"],
+    date: "December 2017 - January 2018",
+    project: "CRM System / Hybris Marketing",
+    colors: ["#9d2c88", "#9d8545", "#bb7256"],
+  },
+  {
+    logo: EfesLogo,
+    tags: ["Backend Developer", "ABAP"],
+    date: "February 2017 - December 2017",
+    project: "CRM System",
+    colors: ["#3250b2", "#bb7256"],
   },
 ];
 
@@ -70,11 +80,13 @@ const Projects = ({ onClose }) => {
             return (
               <div
                 key={index}
-                className="flex flex-col items-center space-y-4 text-center"
+                className="flex flex-col items-center space-y-3 text-center"
               >
                 <div className="h-16 flex items-center justify-center">
                   <Logo width={180} height={50} />
                 </div>
+                <div className="flex text-sm items-center text-teal-100 justify-center">{data.date}</div>
+                <div className="flex text-md items-center text-teal-50 justify-center">{data.project}</div>
                 <div className="flex flex-wrap justify-center gap-2">
                   {data.tags.map((tag, i) => (
                     <Tag text={tag} color={data.colors[i]} />
