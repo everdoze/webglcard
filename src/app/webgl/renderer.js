@@ -85,46 +85,50 @@ class Renderer {
     this.infodotsize = 25 * this.devicePixelRatio;
     this.infodothoverdelta = 7 * this.devicePixelRatio;
     
-    this.textures = {
-      '/about': this.loadTexture(InfoTexture),
-      '/skills': this.loadTexture(BrainTexture),
-      '/hobbies': this.loadTexture(SmileBeam),
-      '/contacts': this.loadTexture(CirclePhone),
-      '/projects': this.loadTexture(Handshake)
-    };
-    
     this.infoPoints = infoPoints;
-
-    this.initColors();
-    this.initScene();
-    this.initCamera();
-    this.initRenderer();
-    this.initRaycaster();
-    this.initGroup();
-    this.popupateScene();
-    this.createMouseHandlers();
-    this.createTouchHandlers();
-
-    this.animations = {};
-    this.infoAnimations = {};
-    this.bgColorTransition = null;
-    this.bloomTransition = null;
-    this.hovered = [];
-    this.prevHovered = [];
-    this.infoHovered = [];
-    this.prevInfoHovered = [];
-    this.mouse = {
-      x: -1.0,
-      y: -1.0
-    }
-
-    gsap.ticker.add(this.render.bind(this));
-    window.addEventListener("resize", debounce(this.onResize.bind(this)));
     
-    EventSystem.bind('reset-camera', this.onBack.bind(this));
-    EventSystem.bind('navigate-to', this.navigateTo.bind(this));
-    
-    onReady();
+    this.initializeTextures().then(() => {
+      this.initColors();
+      this.initScene();
+      this.initCamera();
+      this.initRenderer();
+      this.initRaycaster();
+      this.initGroup();
+      this.popupateScene();
+      this.createMouseHandlers();
+      this.createTouchHandlers();
+      
+      this.animations = {};
+      this.infoAnimations = {};
+      this.bgColorTransition = null;
+      this.bloomTransition = null;
+      this.hovered = [];
+      this.prevHovered = [];
+      this.infoHovered = [];
+      this.prevInfoHovered = [];
+      this.mouse = {
+        x: -1.0,
+        y: -1.0
+      }
+      
+      gsap.ticker.add(this.render.bind(this));
+      window.addEventListener("resize", debounce(this.onResize.bind(this)));
+      
+      EventSystem.bind('reset-camera', this.onBack.bind(this));
+      EventSystem.bind('navigate-to', this.navigateTo.bind(this));
+      
+      onReady();
+    });
+  }
+  
+  async initializeTextures () {
+    this.textures = {
+      '/about': await this.loadTexture(InfoTexture),
+      '/skills': await this.loadTexture(BrainTexture),
+      '/hobbies': await this.loadTexture(SmileBeam),
+      '/contacts': await this.loadTexture(CirclePhone),
+      '/projects': await this.loadTexture(Handshake)
+    };
   }
   
   navigateTo (name) {
@@ -227,16 +231,18 @@ class Renderer {
   }
 
   loadImage (image) {
-    const bytes = this.base64ToUint8Array(image);
-    const blob = new Blob([bytes], { type: 'image/png' });
-    const imageUrl = URL.createObjectURL(blob);
-    const img = new Image();
-    img.src = imageUrl;
-    return img;
+    return new Promise(resolve => {
+      const bytes = this.base64ToUint8Array(image);
+      const blob = new Blob([bytes], { type: 'image/png' });
+      const imageUrl = URL.createObjectURL(blob);
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => resolve(img);
+    });
   }
 
-  loadTexture (image, flip = false) {
-    const texture = new Texture(this.loadImage(image));
+  async loadTexture (image, flip = false) {
+    const texture = new Texture(await this.loadImage(image));
     texture.needsUpdate = true;
     texture.flipY = flip;
     texture.minFilter = LinearMipmapNearestFilter;
