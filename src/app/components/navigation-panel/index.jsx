@@ -37,7 +37,7 @@ const NavigationPanel = ({pages = []}) => {
         <div
           key={idx}
           onClick={(e) => nav(e, p.name)}
-          className={`cursor-pointer px-3 py-1 rounded text-textColor hover:text-activeTextColor transition-colors ${
+          className={`cursor-pointer px-3 py-1 text-lg rounded text-textColor hover:text-activeTextColor transition-colors ${
             current === p.name ? 'text-activeTextColor font-semibold' : ''
           }`}
         >

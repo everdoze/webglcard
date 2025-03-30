@@ -80,6 +80,7 @@ const Projects = ({ onClose }) => {
             return (
               <div
                 key={index}
+                style={{ minHeight: '170px' }}
                 className="flex flex-col items-center space-y-3 text-center"
               >
                 <div className="h-16 flex items-center justify-center">
