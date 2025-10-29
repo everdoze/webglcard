@@ -33,7 +33,7 @@ module.exports = {
         extensions: ['.js', '.jsx'],
     },
     optimization: {
-        minimize: isProduction,
+        minimize: true,
         splitChunks: {
             chunks: 'all',
             minSize: 20000,
