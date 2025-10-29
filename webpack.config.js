@@ -11,7 +11,7 @@ const additionalBodyHeaderHtml = getValue('ADDITIONAL_BODY_HEADER', '');
 const entryName = getValue('ENTRY_NAME', 'index.html');
 
 module.exports = {
-    mode: isProduction ? 'production' : 'development',
+    mode: 'production',
     entry: [
         path.resolve(__dirname, 'src/index.js')
     ],
