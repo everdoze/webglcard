@@ -40,7 +40,7 @@ module.exports = {
             maxSize: 244000,
         }
     },
-    devtool: isProduction ? false : 'eval-source-map',
+    devtool: false,
     module: {
         rules: [
             {
