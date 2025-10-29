@@ -23,7 +23,7 @@ const panelData = [
   {
     logo: FrLogo,
     tags: ["Frontend Developer", "Team Lead", "JavaScript"],
-    date: "March 2023 - Current",
+    date: "March 2022 - Current",
     project: "FastReport Online Designer",
     colors: ["#2a8d8d", "#22674a", "#9d8545"],
   },
